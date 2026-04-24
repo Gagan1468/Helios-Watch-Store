@@ -1,704 +1,1600 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Helios Luxury Watches - Timeless Elegance</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KALEO — Ranch Retreat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@100;200;300;400;500&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  /* ============================================
+     CSS VARIABLES & RESET
+  ============================================ */
+  :root {
+    --cream: #F5EFE0;
+    --warm-white: #FAF7F0;
+    --dark: #1A1610;
+    --brown: #8B6B47;
+    --gold: #C9A96E;
+    --gold-light: #E8D5A3;
+    --sage: #7A8C6E;
+    --rust: #A0522D;
+    --charcoal: #2C2416;
+    --text-muted: #6B5D4A;
+    --font-serif: 'Cormorant Garamond', Georgia, serif;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-sans: 'Jost', sans-serif;
+    --ease-cinematic: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  }
 
-        :root {
-            --cream: #F8F4E6;
-            --ivory: #FDF6E3;
-            --gold: #D4AF37;
-            --dark-gold: #B8942F;
-            --shadow-gold: rgba(212, 175, 55, 0.3);
-            --text-dark: #2C1B0F;
-            --text-light: #5A4A3A;
-        }
+  *, *::before, *::after {
+    margin: 0; padding: 0; box-sizing: border-box;
+  }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, var(--cream) 0%, var(--ivory) 100%);
-            color: var(--text-dark);
-            overflow-x: hidden;
-            line-height: 1.6;
-        }
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
 
-        /* Navigation */
-        .navbar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            padding: 1rem 5%;
-            background: rgba(248, 244, 230, 0.95);
-            backdrop-filter: blur(20px);
-            z-index: 1000;
-            transition: all 0.3s ease;
-        }
+  body {
+    background: var(--dark);
+    color: var(--cream);
+    font-family: var(--font-sans);
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
 
-        .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+  /* ============================================
+     CUSTOM CURSOR
+  ============================================ */
+  .cursor {
+    position: fixed;
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s;
+    mix-blend-mode: difference;
+  }
 
-        .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            font-weight: 700;
-            background: linear-gradient(45deg, var(--gold), var(--dark-gold));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-decoration: none;
-        }
+  .cursor-follower {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(201,169,110,0.5);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: all 0.15s var(--ease-smooth);
+    mix-blend-mode: difference;
+  }
 
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            gap: 2.5rem;
-        }
+  body.cursor-hover .cursor-follower {
+    width: 60px; height: 60px;
+    border-color: var(--gold);
+    background: rgba(201,169,110,0.08);
+  }
 
-        .nav-link {
-            text-decoration: none;
-            color: var(--text-dark);
-            font-weight: 500;
-            position: relative;
-            transition: color 0.3s ease;
-        }
+  /* ============================================
+     LOADER
+  ============================================ */
+  #loader {
+    position: fixed;
+    inset: 0;
+    background: var(--dark);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2rem;
+    transition: opacity 0.8s var(--ease-cinematic), visibility 0.8s;
+  }
 
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--gold);
-            transition: width 0.3s ease;
-        }
+  #loader.hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
 
-        .nav-link:hover::after {
-            width: 100%;
-        }
+  .loader-logo {
+    font-family: var(--font-serif);
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 300;
+    letter-spacing: 0.4em;
+    color: var(--cream);
+    opacity: 0;
+    animation: fadeInUp 0.8s var(--ease-cinematic) 0.3s forwards;
+  }
 
-        .nav-link:hover {
-            color: var(--dark-gold);
-        }
+  .loader-line {
+    width: 0;
+    height: 1px;
+    background: var(--gold);
+    animation: expandLine 1.5s var(--ease-cinematic) 0.6s forwards;
+  }
 
-        /* Hero Section */
-        .hero {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
+  .loader-sub {
+    font-family: var(--font-sans);
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0;
+    animation: fadeIn 0.6s var(--ease-cinematic) 1.2s forwards;
+  }
 
-        .hero-content h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(3.5rem, 8vw, 7rem);
-            font-weight: 700;
-            background: linear-gradient(45deg, var(--gold), var(--dark-gold));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 1.5rem;
-            text-shadow: 0 0 30px var(--shadow-gold);
-            animation: glow 3s ease-in-out infinite alternate;
-        }
+  @keyframes expandLine {
+    to { width: 120px; }
+  }
 
-        @keyframes glow {
-            from { filter: drop-shadow(0 0 20px var(--shadow-gold)); }
-            to { filter: drop-shadow(0 0 40px var(--shadow-gold)); }
-        }
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
 
-        .hero-content p {
-            font-size: clamp(1.2rem, 3vw, 1.8rem);
-            color: var(--text-light);
-            max-width: 600px;
-            margin: 0 auto 2rem;
-        }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 
-        .cta-button {
-            display: inline-block;
-            padding: 1rem 3rem;
-            background: linear-gradient(45deg, var(--gold), var(--dark-gold));
-            color: white;
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            box-shadow: 0 10px 30px var(--shadow-gold);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
+  /* ============================================
+     NAVIGATION
+  ============================================ */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    padding: 2rem 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.6s var(--ease-cinematic);
+  }
 
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px var(--shadow-gold);
-        }
+  nav.scrolled {
+    padding: 1.2rem 4rem;
+    background: rgba(26, 22, 16, 0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(201,169,110,0.15);
+  }
 
-        /* Scroll Indicator */
-        .scroll-indicator {
-            position: absolute;
-            bottom: 3rem;
-            left: 50%;
-            transform: translateX(-50%);
-            color: var(--text-light);
-            animation: bounce 2s infinite;
-        }
+  .nav-logo {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: 400;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--cream);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
 
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
-            40% { transform: translateX(-50%) translateY(-10px); }
-            60% { transform: translateX(-50%) translateY(-5px); }
-        }
+  .nav-logo:hover { color: var(--gold); }
 
-        /* 3D Scrollytelling Section */
-        .scrollytelling {
-            height: 200vh;
-            position: relative;
-            background: linear-gradient(180deg, var(--cream) 0%, var(--ivory) 100%);
-        }
+  .nav-links {
+    display: flex;
+    gap: 3rem;
+    list-style: none;
+  }
 
-        .scroll-container {
-            position: sticky;
-            top: 0;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+  .nav-links a {
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(245,239,224,0.7);
+    text-decoration: none;
+    transition: color 0.3s;
+    position: relative;
+  }
 
-        .watch-3d {
-            width: 500px;
-            height: 500px;
-            perspective: 1000px;
-            cursor: grab;
-        }
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0; right: 0;
+    height: 1px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.3s var(--ease-smooth);
+    transform-origin: left;
+  }
 
-        .watch-model {
-            width: 100%;
-            height: 100%;
-            border-radius: 20px;
-            background: linear-gradient(145deg, #f0e6d2, #e8d9b9);
-            position: relative;
-            transform-style: preserve-3d;
-            transition: all 0.1s ease;
-            box-shadow: 
-                0 50px 100px rgba(0,0,0,0.2),
-                inset 0 1px 0 rgba(255,255,255,0.8);
-        }
+  .nav-links a:hover { color: var(--cream); }
+  .nav-links a:hover::after { transform: scaleX(1); }
 
-        .watch-model:active {
-            cursor: grabbing;
-        }
+  .nav-cta {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.75rem 1.8rem;
+    border: 1px solid rgba(201,169,110,0.5);
+    color: var(--gold);
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s var(--ease-smooth);
+    position: relative;
+    overflow: hidden;
+  }
 
-        .watch-face {
-            position: absolute;
-            top: 20%;
-            left: 50%;
-            transform: translateX(-50%) translateZ(30px);
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, #1a1a2e 0%, #16213e 70%);
-            border-radius: 50%;
-            box-shadow: 
-                inset 0 0 50px rgba(255,255,255,0.1),
-                0 10px 30px rgba(0,0,0,0.3);
-        }
+  .nav-cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gold);
+    transform: translateX(-100%);
+    transition: transform 0.4s var(--ease-cinematic);
+  }
 
-        .watch-hands {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 4px;
-            height: 60px;
-            background: var(--gold);
-            transform-origin: bottom center;
-            border-radius: 2px;
-            animation: rotateHands 20s linear infinite;
-        }
+  .nav-cta:hover { color: var(--dark); }
+  .nav-cta:hover::before { transform: translateX(0); }
+  .nav-cta span { position: relative; z-index: 1; }
 
-        .watch-hands::before {
-            content: '';
-            position: absolute;
-            width: 2px;
-            height: 40px;
-            background: var(--gold);
-            top: -40px;
-            left: 1px;
-            transform-origin: bottom center;
-            animation: rotateHandsMinute 60s linear infinite;
-        }
+  /* ============================================
+     HERO SECTION
+  ============================================ */
+  #hero {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    padding: 0 4rem 6rem;
+  }
 
-        @keyframes rotateHands {
-            to { transform: translate(-50%, -100%) rotate(360deg); }
-        }
+  .hero-video-wrap {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
 
-        @keyframes rotateHandsMinute {
-            to { transform: translateX(-50%) rotate(360deg); }
-        }
+  .hero-video-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(26,22,16,0.3) 0%,
+      rgba(26,22,16,0.1) 40%,
+      rgba(26,22,16,0.7) 100%
+    );
+  }
 
-        .scroll-text {
-            position: absolute;
-            left: 10%;
-            width: 40%;
-            font-family: 'Playfair Display', serif;
-        }
+  #hero-video {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transform: scale(1.05);
+    transition: transform 8s var(--ease-cinematic);
+  }
 
-        .scroll-text h2 {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            font-weight: 700;
-            margin-bottom: 1rem;
-            opacity: 0;
-            transform: translateX(-50px);
-            background: linear-gradient(45deg, var(--gold), var(--dark-gold));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+  #hero-video.loaded { transform: scale(1); }
 
-        .scroll-text p {
-            font-size: 1.3rem;
-            color: var(--text-light);
-            line-height: 1.6;
-            opacity: 0;
-            transform: translateX(-30px);
-        }
+  .hero-fallback {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    position: absolute;
+    inset: 0;
+  }
 
-        /* Features Section */
-        .features {
-            padding: 10rem 5% 5rem;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 700px;
+  }
 
-        .section-title {
-            text-align: center;
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(2.5rem, 6vw, 4rem);
-            font-weight: 700;
-            margin-bottom: 4rem;
-            background: linear-gradient(45deg, var(--gold), var(--dark-gold));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+  .hero-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 2rem;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s var(--ease-cinematic) 2s forwards;
+  }
 
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 3rem;
-        }
+  .hero-label::before {
+    content: '';
+    width: 40px; height: 1px;
+    background: var(--gold);
+  }
 
-        .feature-card {
-            text-align: center;
-            padding: 3rem 2rem;
-            background: rgba(255,255,255,0.7);
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
+  .hero-title {
+    font-family: var(--font-serif);
+    font-size: clamp(4rem, 10vw, 8rem);
+    font-weight: 300;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    color: var(--cream);
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 1s var(--ease-cinematic) 2.1s forwards;
+  }
 
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
-            transition: left 0.5s;
-        }
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
 
-        .feature-card:hover::before {
-            left: 100%;
-        }
+  .hero-desc {
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    line-height: 1.8;
+    color: rgba(245,239,224,0.7);
+    max-width: 420px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s var(--ease-cinematic) 2.4s forwards;
+  }
 
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
-        }
+  .hero-actions {
+    margin-top: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s var(--ease-cinematic) 2.6s forwards;
+  }
 
-        .feature-icon {
-            font-size: 3.5rem;
-            background: linear-gradient(45deg, var(--gold), var(--dark-gold));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 1.5rem;
-        }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.1rem 2.5rem;
+    background: var(--gold);
+    color: var(--dark);
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.4s var(--ease-cinematic);
+    position: relative;
+    overflow: hidden;
+  }
 
-        .feature-card h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-            color: var(--text-dark);
-        }
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--dark);
+    transform: translateX(-100%);
+    transition: transform 0.4s var(--ease-cinematic);
+  }
 
-        /* Contact Section */
-        .contact {
-            padding: 8rem 5%;
-            text-align: center;
-            background: linear-gradient(135deg, var(--ivory) 0%, var(--cream) 100%);
-        }
+  .btn-primary:hover { color: var(--gold); }
+  .btn-primary:hover::before { transform: translateX(0); }
+  .btn-primary span { position: relative; z-index: 1; }
 
-        .contact-content h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(2.5rem, 6vw, 4rem);
-            margin-bottom: 2rem;
-            background: linear-gradient(45deg, var(--gold), var(--dark-gold));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+  .btn-ghost {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(245,239,224,0.7);
+    text-decoration: none;
+    transition: color 0.3s;
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .btn-ghost:hover { color: var(--cream); }
 
-        /* Footer */
-        .footer {
-            padding: 3rem 5% 2rem;
-            text-align: center;
-            border-top: 1px solid rgba(212, 175, 55, 0.2);
-            background: rgba(248, 244, 230, 0.9);
-        }
+  .hero-scroll-indicator {
+    position: absolute;
+    bottom: 2rem;
+    right: 4rem;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    animation: fadeIn 0.8s var(--ease-cinematic) 3s forwards;
+  }
 
-        .footer p {
-            color: var(--text-light);
-        }
+  .scroll-text {
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(245,239,224,0.5);
+    writing-mode: vertical-rl;
+  }
 
-        /* Scroll Progress */
-        .progress-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--gold), var(--dark-gold));
-            z-index: 1001;
-            transition: width 0.1s ease;
-        }
+  .scroll-line {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .nav-menu {
-                display: none;
-            }
-            
-            .scroll-text {
-                left: 5%;
-                width: 90%;
-            }
-            
-            .watch-3d {
-                width: 350px;
-                height: 350px;
-            }
-        }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.4; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(0.6); }
+  }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 12px;
-        }
+  /* ============================================
+     REVEAL ANIMATIONS
+  ============================================ */
+  .reveal {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.9s var(--ease-cinematic), transform 0.9s var(--ease-cinematic);
+  }
 
-        ::-webkit-scrollbar-track {
-            background: var(--cream);
-        }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
 
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(var(--gold), var(--dark-gold));
-            border-radius: 6px;
-        }
-    </style>
+  .reveal-left {
+    opacity: 0;
+    transform: translateX(-50px);
+    transition: opacity 0.9s var(--ease-cinematic), transform 0.9s var(--ease-cinematic);
+  }
+
+  .reveal-left.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .reveal-right {
+    opacity: 0;
+    transform: translateX(50px);
+    transition: opacity 0.9s var(--ease-cinematic), transform 0.9s var(--ease-cinematic);
+  }
+
+  .reveal-right.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .delay-1 { transition-delay: 0.1s; }
+  .delay-2 { transition-delay: 0.2s; }
+  .delay-3 { transition-delay: 0.3s; }
+  .delay-4 { transition-delay: 0.4s; }
+  .delay-5 { transition-delay: 0.5s; }
+  .delay-6 { transition-delay: 0.6s; }
+
+  /* ============================================
+     SECTION: WHAT LIVES HERE
+  ============================================ */
+  #what-lives-here {
+    padding: 12rem 4rem;
+    position: relative;
+    background: var(--dark);
+    overflow: hidden;
+  }
+
+  #what-lives-here::before {
+    content: 'KALEO';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--font-serif);
+    font-size: 20vw;
+    font-weight: 300;
+    color: rgba(201,169,110,0.03);
+    pointer-events: none;
+    white-space: nowrap;
+    letter-spacing: 0.2em;
+  }
+
+  .section-eyebrow {
+    font-size: 0.6rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 3rem;
+  }
+
+  .section-eyebrow::before {
+    content: '';
+    width: 30px; height: 1px;
+    background: var(--gold);
+  }
+
+  .what-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .what-text h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 300;
+    line-height: 1.3;
+    color: var(--cream);
+    margin-bottom: 2rem;
+  }
+
+  .what-text h2 em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+
+  .what-images {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 1rem;
+    position: relative;
+  }
+
+  .what-img {
+    overflow: hidden;
+    position: relative;
+  }
+
+  .what-img:first-child {
+    grid-column: 1 / 2;
+    grid-row: 1 / 3;
+  }
+
+  .what-img:nth-child(2) {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+  }
+
+  .what-img:nth-child(3) {
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+  }
+
+  .what-img img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.8s var(--ease-cinematic);
+    filter: saturate(0.85) brightness(0.95);
+  }
+
+  .what-img:first-child { height: 500px; }
+  .what-img:nth-child(2) { height: 240px; }
+  .what-img:nth-child(3) { height: 240px; }
+
+  .what-img:hover img { transform: scale(1.06); }
+
+  .breath-tag {
+    position: absolute;
+    bottom: -1.5rem;
+    left: -1.5rem;
+    background: var(--gold);
+    color: var(--dark);
+    padding: 0.8rem 1.5rem;
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    z-index: 10;
+  }
+
+  /* ============================================
+     SECTION: FULLSCREEN VIDEO
+  ============================================ */
+  #full-video-section {
+    position: relative;
+    height: 70vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .full-video-wrap {
+    position: absolute;
+    inset: 0;
+  }
+
+  .full-video-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(26,22,16,0.5);
+  }
+
+  #full-video {
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+
+  .full-video-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    max-width: 700px;
+    padding: 2rem;
+  }
+
+  .full-video-content .eyebrow {
+    font-size: 0.6rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 2rem;
+    display: block;
+  }
+
+  .full-video-content h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 300;
+    line-height: 1.25;
+    color: var(--cream);
+    font-style: italic;
+  }
+
+  /* ============================================
+     SECTION: WATCHES (Products)
+  ============================================ */
+  #watches {
+    padding: 10rem 4rem;
+    background: var(--charcoal);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .watches-header {
+    text-align: center;
+    margin-bottom: 6rem;
+  }
+
+  .watches-header h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 300;
+    color: var(--cream);
+    font-style: italic;
+  }
+
+  .watches-header p {
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    line-height: 1.8;
+  }
+
+  .watches-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .watch-card {
+    position: relative;
+    overflow: hidden;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(201,169,110,0.1);
+    transition: all 0.4s var(--ease-cinematic);
+    cursor: none;
+  }
+
+  .watch-card:hover {
+    border-color: rgba(201,169,110,0.4);
+    transform: translateY(-8px);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+  }
+
+  .watch-img-wrap {
+    overflow: hidden;
+    height: 320px;
+    position: relative;
+  }
+
+  .watch-img-wrap img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s var(--ease-cinematic);
+    filter: grayscale(0.2);
+  }
+
+  .watch-card:hover .watch-img-wrap img {
+    transform: scale(1.08);
+    filter: grayscale(0);
+  }
+
+  .watch-info {
+    padding: 2rem;
+  }
+
+  .watch-name {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--cream);
+    margin-bottom: 0.5rem;
+  }
+
+  .watch-price {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+  }
+
+  .watch-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(245,239,224,0.5);
+    text-decoration: none;
+    transition: color 0.3s;
+    border-bottom: 1px solid rgba(201,169,110,0.2);
+    padding-bottom: 0.3rem;
+  }
+
+  .watch-link:hover { color: var(--gold); border-color: var(--gold); }
+
+  .watch-link::after {
+    content: '→';
+    transition: transform 0.3s;
+  }
+
+  .watch-link:hover::after { transform: translateX(4px); }
+
+  /* ============================================
+     SECTION: FEATURES (Land, Spirit, Vision)
+  ============================================ */
+  #features {
+    padding: 12rem 4rem;
+    background: var(--dark);
+    position: relative;
+  }
+
+  .features-intro {
+    text-align: center;
+    margin-bottom: 8rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .features-intro h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 300;
+    line-height: 1.3;
+    color: var(--cream);
+    font-style: italic;
+    margin-bottom: 2rem;
+  }
+
+  .features-intro p {
+    font-size: 0.85rem;
+    line-height: 2;
+    color: var(--text-muted);
+  }
+
+  .feature-block {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+    max-width: 1100px;
+    margin: 0 auto 10rem;
+  }
+
+  .feature-block:last-child { margin-bottom: 0; }
+
+  .feature-block.reverse .feature-img-side { order: 2; }
+  .feature-block.reverse .feature-text-side { order: 1; }
+
+  .feature-img-side {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-img-side img {
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+    display: block;
+    filter: saturate(0.8) brightness(0.9);
+    transition: transform 1s var(--ease-cinematic), filter 0.6s;
+  }
+
+  .feature-img-side:hover img {
+    transform: scale(1.04);
+    filter: saturate(1) brightness(1);
+  }
+
+  .feature-number {
+    position: absolute;
+    top: 2rem; left: 2rem;
+    font-family: var(--font-serif);
+    font-size: 6rem;
+    font-weight: 300;
+    color: rgba(201,169,110,0.15);
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .feature-text-side {
+    padding: 2rem 0;
+  }
+
+  .feature-text-side h3 {
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 300;
+    color: var(--cream);
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+  }
+
+  .feature-divider {
+    width: 50px;
+    height: 1px;
+    background: var(--gold);
+    margin-bottom: 1.5rem;
+  }
+
+  .feature-text-side p {
+    font-size: 0.9rem;
+    line-height: 2;
+    color: var(--text-muted);
+    margin-bottom: 2.5rem;
+  }
+
+  /* ============================================
+     SECTION: GALLERY / WESTERN BEAUTY
+  ============================================ */
+  #gallery {
+    padding: 10rem 0;
+    background: var(--charcoal);
+    overflow: hidden;
+  }
+
+  .gallery-header {
+    text-align: center;
+    padding: 0 4rem;
+    margin-bottom: 5rem;
+  }
+
+  .gallery-header .eyebrow {
+    font-size: 0.6rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 1.5rem;
+  }
+
+  .gallery-header h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--cream);
+    line-height: 1.2;
+  }
+
+  .gallery-header p {
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
+    line-height: 1.9;
+    color: var(--text-muted);
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .gallery-strip {
+    display: flex;
+    gap: 1rem;
+    padding: 0 4rem;
+    overflow: hidden;
+  }
+
+  .gallery-strip-item {
+    flex: 0 0 calc(33.333% - 0.667rem);
+    height: 500px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .gallery-strip-item img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s var(--ease-cinematic), filter 0.4s;
+    filter: saturate(0.7) brightness(0.85);
+  }
+
+  .gallery-strip-item:hover img {
+    transform: scale(1.06);
+    filter: saturate(1) brightness(1);
+  }
+
+  .gallery-strip-item .overlay-text {
+    position: absolute;
+    bottom: 2rem; left: 2rem;
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--cream);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.4s var(--ease-cinematic);
+  }
+
+  .gallery-strip-item:hover .overlay-text {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ============================================
+     SECTION: FOOTER VIDEO + CTA
+  ============================================ */
+  #footer-video-section {
+    position: relative;
+    height: 85vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #footer-video {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+
+  .footer-video-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(26,22,16,0.3), rgba(26,22,16,0.75));
+  }
+
+  .footer-video-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    max-width: 700px;
+    padding: 2rem;
+  }
+
+  .footer-video-content h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.8rem, 4vw, 3.5rem);
+    font-weight: 300;
+    line-height: 1.4;
+    color: var(--cream);
+    font-style: italic;
+    margin-bottom: 3rem;
+  }
+
+  /* ============================================
+     FOOTER
+  ============================================ */
+  footer {
+    background: var(--dark);
+    padding: 5rem 4rem 3rem;
+    border-top: 1px solid rgba(201,169,110,0.1);
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 4rem;
+    margin-bottom: 4rem;
+  }
+
+  .footer-brand .logo {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    font-weight: 300;
+    letter-spacing: 0.3em;
+    color: var(--cream);
+    display: block;
+    margin-bottom: 1.5rem;
+  }
+
+  .footer-brand p {
+    font-size: 0.8rem;
+    line-height: 1.9;
+    color: var(--text-muted);
+    max-width: 300px;
+  }
+
+  .footer-col h4 {
+    font-size: 0.6rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+  }
+
+  .footer-col p, .footer-col a {
+    font-size: 0.8rem;
+    line-height: 2;
+    color: var(--text-muted);
+    text-decoration: none;
+    display: block;
+    transition: color 0.3s;
+  }
+
+  .footer-col a:hover { color: var(--cream); }
+
+  .footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.7rem;
+    color: rgba(107,93,74,0.6);
+  }
+
+  .footer-bottom a {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .footer-bottom a:hover { color: var(--gold); }
+
+  /* ============================================
+     HORIZONTAL LINE DECORATORS
+  ============================================ */
+  .gold-line {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    opacity: 0.3;
+  }
+
+  /* ============================================
+     PARALLAX IMAGE WRAP
+  ============================================ */
+  .parallax-wrap {
+    overflow: hidden;
+    position: relative;
+  }
+
+  .parallax-img {
+    transform: scale(1.15);
+    transition: transform 0s;
+    will-change: transform;
+  }
+
+  /* ============================================
+     SCROLL PROGRESS BAR
+  ============================================ */
+  #progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    background: var(--gold);
+    z-index: 9997;
+    width: 0%;
+    transition: width 0.1s;
+    box-shadow: 0 0 10px rgba(201,169,110,0.5);
+  }
+
+  /* ============================================
+     NOISE TEXTURE OVERLAY
+  ============================================ */
+  .noise-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9990;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+  }
+
+  /* ============================================
+     MOBILE MENU TOGGLE
+  ============================================ */
+  .menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 5px;
+  }
+
+  .menu-toggle span {
+    display: block;
+    width: 24px; height: 1px;
+    background: var(--cream);
+    transition: all 0.3s;
+  }
+
+  /* ============================================
+     RESPONSIVE
+  ============================================ */
+  @media (max-width: 900px) {
+    nav { padding: 1.5rem 2rem; }
+    nav.scrolled { padding: 1rem 2rem; }
+    .nav-links { display: none; }
+    .menu-toggle { display: flex; }
+    .nav-cta { display: none; }
+
+    #hero { padding: 0 2rem 4rem; }
+    .hero-scroll-indicator { display: none; }
+
+    .what-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .what-img:first-child { height: 350px; }
+
+    .feature-block { grid-template-columns: 1fr; gap: 3rem; }
+    .feature-block.reverse .feature-img-side,
+    .feature-block.reverse .feature-text-side { order: unset; }
+
+    .watches-grid { grid-template-columns: 1fr; }
+    .gallery-strip { flex-direction: column; padding: 0 2rem; }
+    .gallery-strip-item { flex: none; height: 300px; }
+
+    .footer-grid { grid-template-columns: 1fr; gap: 3rem; }
+    #what-lives-here, #features, #watches, #gallery { padding: 6rem 2rem; }
+    footer { padding: 4rem 2rem 2rem; }
+  }
+</style>
 </head>
 <body>
-    <!-- Progress Bar -->
-    <div class="progress-bar" id="progress"></div>
 
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="#" class="logo">HELIOS</a>
-            <ul class="nav-menu">
-                <li><a href="#home" class="nav-link">Home</a></li>
-                <li><a href="#scrollytelling" class="nav-link">Discover</a></li>
-                <li><a href="#features" class="nav-link">Craftsmanship</a></li>
-                <li><a href="#contact" class="nav-link">Contact</a></li>
-            </ul>
-        </div>
-    </nav>
+<!-- NOISE OVERLAY -->
+<div class="noise-overlay"></div>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-content">
-            <h1>Timeless<br><span>Elegance</span></h1>
-            <p>Crafted for eternity. Where tradition meets innovation in every tick.</p>
-            <a href="#scrollytelling" class="cta-button">Discover Excellence</a>
-        </div>
-        <div class="scroll-indicator">
-            <i class="fas fa-chevron-down"></i>
-        </div>
-    </section>
+<!-- SCROLL PROGRESS -->
+<div id="progress-bar"></div>
 
-    <!-- 3D Scrollytelling -->
-    <section id="scrollytelling" class="scrollytelling">
-        <div class="scroll-container">
-            <div class="watch-3d" id="watch3D">
-                <div class="watch-model" id="watchModel">
-                    <div class="watch-face"></div>
-                    <div class="watch-hands"></div>
-                </div>
-            </div>
-            <div class="scroll-text">
-                <h2>Precision<br>Engineering</h2>
-                <p>Every component meticulously crafted. 287 hand-finished parts working in perfect harmony.</p>
-            </div>
-        </div>
-    </section>
+<!-- CUSTOM CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursor-follower"></div>
 
-    <!-- Features -->
-    <section id="features" class="features">
-        <h2 class="section-title">Masterful Craftsmanship</h2>
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-crown"></i>
-                </div>
-                <h3>Swiss Precision</h3>
-                <p>Hand-assembled movements certified by Master Watchmakers. Accuracy to -4/+6 seconds per day.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-diamond"></i>
-                </div>
-                <h3>18K Gold Case</h3>
-                <p>Luxury 18 karat gold case with sapphire crystal. Water resistant to 100 meters.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-infinity"></i>
-                </div>
-                <h3>Lifetime Guarantee</h3>
-                <p>Engineered for generations. Full service and maintenance included for life.</p>
-            </div>
-        </div>
-    </section>
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-logo">KALEO</div>
+  <div class="loader-line"></div>
+  <div class="loader-sub">Ranch Retreat — Est. 2024</div>
+</div>
 
-    <!-- Contact -->
-    <section id="contact" class="contact">
-        <div class="contact-content">
-            <h2>Ready to Own Eternity?</h2>
-            <p>Experience Helios at our exclusive boutiques worldwide or schedule a private viewing.</p>
-            <a href="#" class="cta-button" style="margin-top: 2rem;">Book Appointment</a>
-        </div>
-    </section>
+<!-- NAVIGATION -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">HELIOS</a>
+  <ul class="nav-links">
+    <li><a href="#what-lives-here">About us</a></li>
+    <li><a href="#watches">See Watches</a></li>
+    <li><a href="#features">Learn More</a></li>
+    <li><a href="#gallery">Houses</a></li>
+  </ul>
+  <a href="#footer-video-section" class="nav-cta">
+    <span>Book a Visit</span>
+  </a>
+  <div class="menu-toggle" id="menuToggle">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <p>&copy; 2024 Helios Luxury Watches. Crafted for Eternity. All rights reserved.</p>
-    </footer>
+<!-- ============================================
+     HERO SECTION
+============================================ -->
+<section id="hero">
+  <div class="hero-video-wrap">
+    <!-- Replace src with your video or keep fallback image -->
+    <video id="hero-video" autoplay muted loop playsinline preload="auto"
+      poster="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1920&q=80">
+      <source src="kaka.mp4" type="video/mp4">
+    </video>
+    <!-- Fallback image in case video doesn't load -->
+    <img class="hero-fallback" 
+      src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1920&q=80" 
+      alt="Kaleo Ranch"
+      style="display:none;" id="hero-fallback-img">
+  </div>
 
-    <script>
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
+  <div class="hero-content">
+    <div class="hero-label">Modern Ranch Retreat</div>
+    <h1 class="hero-title">
+      Kaleo<br><em>Ranch</em>
+    </h1>
+    <p class="hero-desc">
+      A modern ranch retreat designed for quiet escapes, outdoor living, and meaningful gatherings. Slow down, reconnect, and enjoy nature with intention.
+    </p>
+    <div class="hero-actions">
+      <a href="#what-lives-here" class="btn-primary">
+        <span>Discover</span>
+      </a>
+      <a href="#gallery" class="btn-ghost">View Gallery →</a>
+    </div>
+  </div>
 
-        // Progress bar
-        window.addEventListener('scroll', () => {
-            const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-            document.getElementById('progress').style.width = scrolled + '%';
-        });
+  <div class="hero-scroll-indicator">
+    <span class="scroll-text">Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
 
-        // 3D Watch Interactions
-        const watchModel = document.getElementById('watchModel');
-        const watch3D = document.getElementById('watch3D');
+<!-- ============================================
+     WHAT LIVES HERE
+============================================ -->
+<section id="what-lives-here">
+  <div class="what-grid">
+    <div class="what-text">
+      <div class="section-eyebrow reveal">What Lives Here</div>
+      <h2 class="reveal delay-2">
+        Kaleo is more than a home — it's a <em>living rhythm.</em>
+      </h2>
+      <p class="reveal delay-3" style="font-size:0.9rem; line-height:2; color:var(--text-muted); margin-bottom:2.5rem;">
+        Open fields. Wooden fences weathered by time. Horses grazing at dawn. Smoke curling from the hearth as dusk settles in. This is where you remember what silence feels like.
+      </p>
+      <a href="#features" class="btn-primary reveal delay-4" style="display:inline-flex;">
+        <span>Learn More</span>
+      </a>
+    </div>
 
-        let isDragging = false;
-        let previousMousePosition = { x: 0, y: 0 };
-        let rotation = { x: -10, y: 0 };
-        let targetRotation = { x: -10, y: 0 };
+    <div class="what-images reveal-right delay-2">
+      <div class="what-img parallax-wrap">
+        <img class="parallax-img" 
+          src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80" 
+          alt="Ranch landscape">
+        <div class="breath-tag">BREATH</div>
+      </div>
+      <div class="what-img parallax-wrap">
+        <img class="parallax-img"
+          src="https://images.unsplash.com/photo-1510797215324-95aa89f43c33?w=600&q=80" 
+          alt="Ranch horses">
+      </div>
+      <div class="what-img parallax-wrap">
+        <img class="parallax-img"
+          src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=600&q=80" 
+          alt="Open fields">
+      </div>
+    </div>
+  </div>
+</section>
 
-        watch3D.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            previousMousePosition = { x: e.clientX, y: e.clientY };
-               });
+<div class="gold-line"></div>
 
-        document.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            
-            const deltaMove = {
-                x: e.clientX - previousMousePosition.x,
-                y: e.clientY - previousMousePosition.y
-            };
+<!-- ============================================
+     FULL VIDEO SECTION
+============================================ -->
+<section id="full-video-section">
+  <div class="full-video-wrap">
+    <video id="full-video" autoplay muted loop playsinline preload="auto"
+      poster="https://images.unsplash.com/photo-1533093818801-3e7f97e0c1e9?w=1920&q=80">
+      <source src="kaka.mp4" type="video/mp4">
+    </video>
+  </div>
 
-            targetRotation.y += deltaMove.x * 0.5;
-            targetRotation.x -= deltaMove.y * 0.5;
+  <div class="full-video-content">
+    <span class="eyebrow reveal">The Land, The Spirit, The Name</span>
+    <h2 class="reveal delay-2">
+      Kaleo was born from the desire to return — to the land, to meaning, to something deeper than <em>speed and noise.</em>
+    </h2>
+  </div>
+</section>
 
-            // Limit rotation
-            targetRotation.x = Math.max(-30, Math.min(30, targetRotation.x));
-            targetRotation.y = Math.max(-180, Math.min(180, targetRotation.y));
+<div class="gold-line"></div>
 
-            previousMousePosition = { x: e.clientX, y: e.clientY };
-        });
+<!-- ============================================
+     WATCHES SECTION
+============================================ -->
+<section id="watches">
+  <div class="watches-header">
+    <div class="section-eyebrow reveal" style="justify-content:center;">Featured Timepieces</div>
+    <h2 class="reveal delay-2">The Things That<br><em>Still Matter</em></h2>
+    <p class="reveal delay-3">Kaleo invites you to slow down — to move with purpose, to remember what life feels like when it breathes with meaning.</p>
+  </div>
 
-        document.addEventListener('mouseup', () => {
-            isDragging = false;
-        });
+  <div class="watches-grid">
+    <div class="watch-card reveal delay-2">
+      <div class="watch-img-wrap">
+        <img src="https://images.unsplash.com/photo-1587836374828-4dbafa94cf0e?w=600&q=80" alt="Movado Watch">
+      </div>
+      <div class="watch-info">
+        <div class="watch-name">Movado</div>
+        <div class="watch-price">Rs. 90,000</div>
+        <a href="https://www.helioswatchstore.com/movado-men-bold-round-black-watches-3600898" 
+           target="_blank" class="watch-link">Shop Now</a>
+      </div>
+    </div>
 
-        // Smooth rotation animation
-        function animateRotation() {
-            rotation.x += (targetRotation.x - rotation.x) * 0.1;
-            rotation.y += (targetRotation.y - rotation.y) * 0.1;
-            
-            watchModel.style.transform = `
-                rotateX(${rotation.x}deg) 
-                rotateY(${rotation.y}deg) 
-                scale(1)
-            `;
-            
-            requestAnimationFrame(animateRotation);
-        }
-        animateAnimation();
+    <div class="watch-card reveal delay-3">
+      <div class="watch-img-wrap">
+        <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=80" alt="Cerruti Watch">
+      </div>
+      <div class="watch-info">
+        <div class="watch-name">Cerruti 1881</div>
+        <div class="watch-price">Rs. 32,500</div>
+        <a href="https://www.helioswatchstore.com/cerruti-1881-men-fw23-square-black-watches-ceciwgn0019503" 
+           target="_blank" class="watch-link">Shop Now</a>
+      </div>
+    </div>
+  </div>
+</section>
 
-        // Scroll-based 3D transformations
-        window.addEventListener('scroll', () => {
-            const scrollSection = document.querySelector('.scrollytelling');
-            const scrollPercent = (window.scrollY - scrollSection.offsetTop) / scrollSection.offsetHeight;
-            
-            if (scrollPercent >= 0 && scrollPercent <= 1) {
-                // Scale and zoom effect
-                const scale = 1 + (scrollPercent * 0.3);
-                const zTranslate = scrollPercent * 50;
-                
-                watchModel.style.transform = `
-                    rotateX(${rotation.x + scrollPercent * 10}deg) 
-                    rotateY(${rotation.y + scrollPercent * 20}deg)
-                    translateZ(${zTranslate}px)
-                    scale(${scale})
-                `;
-                
-                // Animate scroll text
-                const scrollTexts = document.querySelectorAll('.scroll-text h2, .scroll-text p');
-                scrollTexts.forEach((text, index) => {
-                    const delay = index * 0.2;
-                    const progress = Math.max(0, Math.min(1, scrollPercent * 3 - delay));
-                    
-                    text.style.opacity = progress;
-                    text.style.transform = `translateX(${-50 + progress * 50}px)`;
-                });
-            }
-        });
+<!-- ============================================
+     FEATURES (Land, Spirit, Vision)
+============================================ -->
+<section id="features">
+  <div class="features-intro">
+    <div class="section-eyebrow reveal" style="justify-content:center;">The Things That Still Matter</div>
+    <h2 class="reveal delay-2">Kaleo invites you to slow down</h2>
+    <p class="reveal delay-3">To move with purpose, to remember what life feels like when it breathes with meaning.</p>
+  </div>
 
-        // Navbar scroll effect
-        window.addEventListener('scroll', () => {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 100) {
-                navbar.style.background = 'rgba(248, 244, 230, 0.98)';
-                navbar.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1)';
-            } else {
-                navbar.style.background = 'rgba(248, 244, 230, 0.95)';
-                navbar.style.boxShadow = 'none';
-            }
-        });
+  <!-- Feature 1: The Land -->
+  <div class="feature-block">
+    <div class="feature-img-side reveal-left">
+      <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=900&q=80" alt="The Land">
+      <div class="feature-number">01</div>
+    </div>
+    <div class="feature-text-side reveal-right delay-2">
+      <h3>The Land</h3>
+      <div class="feature-divider"></div>
+      <p>Kaleo begins with the land — the rolling fields, still mornings, and the quiet rhythms of nature. This is a place where sheep graze under golden light, where time slows, and the earth reminds us what it means to be rooted.</p>
+      <a href="#gallery" class="btn-ghost">Explore →</a>
+    </div>
+  </div>
 
-        // Parallax effect for hero
-        window.addEventListener('scroll', () => {
-            const scrolled = window.scrollY;
-            const hero = document.querySelector('.hero');
-            const rate = scrolled * -0.5;
-            
-            if (scrolled < window.innerHeight) {
-                hero.style.transform = `translateY(${rate}px)`;
-            }
-        });
+  <!-- Feature 2: The Spirit -->
+  <div class="feature-block reverse">
+    <div class="feature-img-side reveal-right">
+      <img src="https://images.unsplash.com/photo-1510797215324-95aa89f43c33?w=900&q=80" alt="The Spirit">
+      <div class="feature-number">02</div>
+    </div>
+    <div class="feature-text-side reveal-left delay-2">
+      <h3>The Spirit</h3>
+      <div class="feature-divider"></div>
+      <p>There's a spirit here that lives in the details — the warmth of shared meals, the honesty of hard work, the echo of footsteps on wooden floors. It's in the stories passed down, in the breath between tasks, in the care behind every simple act.</p>
+      <a href="#gallery" class="btn-ghost">Discover →</a>
+    </div>
+  </div>
 
-        // Feature cards hover animation
-        document.querySelectorAll('.feature-card').forEach(card => {
-            card.addEventListener('mouseenter', () => {
-                card.style.transform = 'translateY(-15px) rotateX(5deg)';
-            });
-            
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = 'translateY(0) rotateX(0deg)';
-            });
-        });
+  <!-- Feature 3: The Vision -->
+  <div class="feature-block">
+    <div class="feature-img-side reveal-left">
+      <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=900&q=80" alt="The Vision">
+      <div class="feature-number">03</div>
+    </div>
+    <div class="feature-text-side reveal-right delay-2">
+      <h3>The Vision</h3>
+      <div class="feature-divider"></div>
+      <p>Our vision is to protect what matters — space, silence, beauty, and belonging. Kaleo is not just a place to visit, but a way of being. We invite those who seek intention, wonder, and a deeper kind of wealth to return to what truly nourishes.</p>
+      <a href="#footer-video-section" class="btn-primary" style="display:inline-flex;">
+        <span>Book a Visit</span>
+      </a>
+    </div>
+  </div>
+</section>
 
-        // Intersection Observer for animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
+<!-- ============================================
+     GALLERY: WESTERN BEAUTY
+============================================ -->
+<section id="gallery">
+  <div class="gallery-header">
+    <span class="eyebrow reveal">western beauty</span>
+    <h2 class="reveal delay-2">Some moments speak louder<br><em>than words</em></h2>
+    <p class="reveal delay-3">A trail through morning mist, a hand on a horse's mane, the shadow of trees dancing on an old wooden floor.</p>
+  </div>
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
+  <div class="gallery-strip">
+    <div class="gallery-strip-item reveal delay-1">
+      <img src="https://images.unsplash.com/photo-1533093818801-3e7f97e0c1e9?w=800&q=80" alt="Ranch at dawn">
+      <span class="overlay-text">Dawn Trail</span>
+    </div>
+    <div class="gallery-strip-item reveal delay-2">
+      <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80" alt="Golden fields">
+      <span class="overlay-text">Golden Hour</span>
+    </div>
+    <div class="gallery-strip-item reveal delay-3">
+      <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=800&q=80" alt="Open range">
+      <span class="overlay-text">Open Range</span>
+    </div>
+  </div>
+</section>
 
-        // Observe feature cards
-        document.querySelectorAll('.feature-card').forEach(card => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(50px)';
-            card.style.transition = 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-            observer.observe(card);
-        });
+<!-- ============================================
+     FOOTER VIDEO + CTA
+============================================ -->
+<section id="footer-video-section">
+  <video id="footer-video" autoplay muted loop playsinline preload="auto"
+    poster="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1920&q=80">
+    <source src="kaka.mp4" type="video/mp4">
+  </video>
+  <div class="footer-video-overlay"></div>
 
-        // Typing effect for hero subtitle (optional enhancement)
-        const subtitle = document.querySelector('.hero-content p');
-        const originalText = subtitle.textContent;
-        let i = 0;
+  <div class="footer-video-content">
+    <h2 class="reveal">
+      "We welcome kindred spirits. Whether you're looking for silence, space, or simply a change in pace — Kaleo is open."
+    </h2>
+    <div class="reveal delay-3">
+      <a href="mailto:hello@kaleo.ranch" class="btn-primary" style="display:inline-flex; margin:0 auto;">
+        <span>Book a Visit</span>
+      </a>
+    </div>
+  </div>
+</section>
 
-        function typeWriter() {
-            if (i < originalText.length) {
-                subtitle.textContent = originalText.slice(0, i + 1) + '|';
-                i++;
-                setTimeout(typeWriter, 50);
-            } else {
-                subtitle.textContent = originalText;
-            }
-        }
+<!-- ============================================
+     FOOTER
+============================================ -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand reveal">
+      <span class="logo">KALEO</span>
+      <p>A modern ranch retreat designed for quiet escapes, outdoor living, and meaningful gatherings from scenic views to curated experiences.</p>
+    </div>
 
-        // Start typing effect after hero title loads
-        setTimeout(typeWriter, 1000);
+    <div class="footer-col reveal delay-2">
+      <h4>Address</h4>
+      <p>Ranch — 1847 Dusty Creek Road<br>Fredericksburg, TX 78624<br>United States</p>
+    </div>
 
-        // Mobile menu toggle (if needed for future)
-        function toggleMobileMenu() {
-            const navMenu = document.querySelector('.nav-menu');
-            navMenu.classList.toggle('active');
-        }
+    <div class="footer-col reveal delay-3">
+      <h4>Contact</h4>
+      <a href="tel:+15125550198">+1 (512) 555-0198</a>
+      <a href="mailto:hello@kaleo.ranch">hello@kaleo.ranch</a>
+      <br>
+      <h4 style="margin-top:1rem;">Developed by</h4>
+      <a href="https://webflow.com/templates/designers/lucas-gusso" target="_blank">Lucas Gusso</a>
+      <a href="https://webflow.com" target="_blank">Powered by Webflow</a>
+    </div>
+  </div>
 
-        // Preload critical assets
-        window.addEventListener('load', () => {
-            document.body.classList.add('loaded');
-        });
-    </script>
+  <div class="footer-bottom">
+    <span>Copyright © 2024 Kaleo Ranch. All rights reserved.</span>
+    <a href="#">Privacy Policy</a>
+  </div>
+</footer>
+
+<!-- ============================================
+     JAVASCRIPT
+============================================ -->
+<script>
+  // ============ LOADER ============
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('loader').classList.add('hidden');
+      document.body.style.overflow = 'visible';
+      // Trigger hero video scale
+      const hv = document.getElementById('hero-video');
+      if (hv) hv.classList.add('loaded');
+    }, 2200);
+  });
+
+  // ============ CUSTOM CURSOR ============
+  const cursor = document.getElementById('cursor');
+  const follower = document.getElementById('cursor-follower');
+  let mouseX = 0, mouseY = 0;
+  let followerX = 0, followerY = 0;
+
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    cursor.style.left = mouseX + 'px';
+    cursor.style.top = mouseY + 'px';
+  });
+
+  function animateFollower() {
+    followerX += (mouseX - followerX) * 0.12;
+    followerY += (mouseY - followerY) * 0.12;
+    follower.style.left = followerX + 'px';
+    follower.style.top = followerY + 'px';
+    requestAnimationFrame(animateFollower);
+  }
+  animateFollower();
+
+  // Hover effect on interactive elements
+  const hoverEls = document.querySelectorAll('a, button, .watch-card, .gallery-strip-item');
+  hoverEls.forEach(el => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+  });
+
+  // ============ NAVBAR SCROLL ============
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 80) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+  });
+
+  // ============ SCROLL PROGRESS BAR ============
+  const progressBar = document.getElementById('progress-bar');
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.body.scrollHeight - window.innerHeight;
+    const progress = (scrollTop / docHeight) * 100;
+    progressBar.style.width = progress + '%';
+  });
+
+  // ============ INTERSECTION OBSERVER (Reveal) ============
+  const reveals = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.12,
+    rootMargin: '0px 0px -60px 0px'
+  });
+
+  reveals.forEach(el => observer.observe(el));
+
+  // ============ PARALLAX ============
+  window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
+
+    document.querySelectorAll('.parallax-img').forEach(img => {
+      const parent = img.closest('.parallax-wrap');
+      if (!parent) return;
+      const rect = parent.getBoundingClientRect();
+      const relativeY = rect.top + scrollY;
+      const offset = (scrollY - relativeY) * 0.2;
+      img.style.transform = `scale(1.15) translateY(${offset}px)`;
+    });
+  });
+
+  // ============ HERO VIDEO FALLBACK ============
+  const heroVideo = document.getElementById('hero-video');
+  const heroFallback = document.getElementById('hero-fallback-img');
+  if (heroVideo) {
+    heroVideo.addEventListener('error', () => {
+      heroVideo.style.display = 'none';
+      if (heroFallback) heroFallback.style.display = 'block';
+    });
+  }
+
+  // ============ MOBILE MENU ============
+  const menuToggle = document.getElementById('menuToggle');
+  const navLinks = document.querySelector('.nav-links');
+  if (menuToggle && navLinks) {
+    menuToggle.addEventListener('click', () => {
+      const isOpen = navLinks.style.display === 'flex';
+      navLinks.style.display = isOpen ? 'none' : 'flex';
+      navLinks.style.flexDirection = isOpen ? '' : 'column';
+      navLinks.style.position = isOpen ? '' : 'absolute';
+      navLinks.style.top = isOpen ? '' : '100%';
+      navLinks.style.left = isOpen ? '' : '0';
+      navLinks.style.right = isOpen ? '' : '0';
+      navLinks.style.background = isOpen ? '' : 'rgba(26,22,16,0.97)';
+      navLinks.style.padding = isOpen ? '' : '2rem';
+      navLinks.style.borderTop = isOpen ? '' : '1px solid rgba(201,169,110,0.2)';
+    });
+  }
+
+  // ============ SMOOTH SCROLL ============
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      const target = document.querySelector(link.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  });
+</script>
 </body>
 </html>
